@@ -13,8 +13,8 @@ const transportOptions = {
 const setup = {
   keepAlive: 60000,
   lifetime: 180000,
-  dataMimeType: 'binary',
-  metadataMimeType: 'binary',
+  dataMimeType: 'text/plain',
+  metadataMimeType: 'text/plain',
 };
 
 const transport = new RSocketWebsocketClient(transportOptions);
@@ -37,7 +37,7 @@ client.connect().subscribe({
       onSubscribe: sub => {
         subscription = sub;
         console.log(`Client is establishing a channel`);
-        subscription.request(1000000);
+        subscription.request(0x7fffffff);
       },
       onNext: response => {
         console.log(response);
