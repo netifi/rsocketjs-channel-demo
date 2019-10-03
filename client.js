@@ -24,26 +24,13 @@ client.connect().subscribe({
   onComplete: socket => {
     console.log('Client connected to the RSocket server');
 
-    let clientRequests = ['a', 'b', 'c', 'd', 'e', 'f'];
-    clientRequests = clientRequests.map(req => {
-      return {
-        data: req
-      };
-    });
-    let subscription;
-
-    socket.requestChannel(Flowable.just(...clientRequests))
+    socket.requestResponse({data: 'hello'})
     .subscribe({
       onSubscribe: sub => {
-        subscription = sub;
-        console.log(`Client is establishing a channel`);
-        subscription.request(0x7fffffff);
+        console.log(`Client subscribed to server`);
       },
-      onNext: response => {
+      onComplete: response => {
         console.log(response);
-      },
-      onComplete: () => {
-        console.log(`Client received end of server stream`);
       }
     });
 

@@ -4,37 +4,11 @@ const {Flowable, Single} = require('rsocket-flowable');
 
 const getRequestHandler = () => {
   return {
-    requestChannel: clientFlowable => {
-      let subscription;
-      let responses = ['g', 'h', 'i'];
-      responses = responses.map(res => {
-        return {
-          data: res
-        };
-      });
-      return new Flowable(subscriber => {
+    requestResponse: request => {
+      console.log(request);
+      return new Single(subscriber => {
         subscriber.onSubscribe();
-        clientFlowable.subscribe({
-          onSubscribe: sub => {
-            subscription = sub;
-            console.log('Server subscribed to client channel');
-            subscription.request(1);
-          },
-          onNext: clientRequest => {
-            console.log(clientRequest);
-            subscription.request(1);
-            if (responses.length) {
-              subscriber.onNext(responses.shift());
-            }
-          },
-          onComplete: () => {
-            console.log('Server received end of client stream');
-            while(responses.length) {
-              subscriber.onNext(responses.shift());
-            }
-            subscriber.onComplete();
-          }
-        });
+        subscriber.onComplete({ data: 'goodbye'});
       });
     }
   }
